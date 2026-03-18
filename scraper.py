@@ -130,7 +130,7 @@ for query in QUERIES:
                 data.extend(comments)
                 time.sleep(0.3)
 
-# --- SAVE ---
+
 df = pd.DataFrame(data)
 df.drop_duplicates(subset=["type", "id"], inplace=True)
 df.to_csv("disney_reddit_2015_2020.csv", index=False)
