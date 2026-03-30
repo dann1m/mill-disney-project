@@ -12,7 +12,7 @@ END_DATE   = "2020-12-31"
 
 QUERIES = [
     # Animated / Pixar
-    "Inside Out",
+    # "Inside Out",
     "Zootopia",
     "Moana",
     "Coco",
@@ -212,7 +212,12 @@ with pd.ExcelWriter("disney_reddit_2015_2020.xlsx", engine="openpyxl") as writer
         # save everything for this query to one sheet
         if query_data:
             sheet_name = query[:31].replace("/", "").replace("*", "").replace("?", "").replace(":", "").replace("[", "").replace("]", "")
-            pd.DataFrame(query_data).to_excel(writer, sheet_name=sheet_name, index=False)
-            print(f"  → '{sheet_name}' saved ({len(query_data)} records)")
+            df_query = pd.DataFrame(query_data)
+            
+            # save CSV backup immediately (won't corrupt)
+            csv_name = f"backup_{sheet_name}.csv"
+            df_query.to_csv(csv_name, index=False)
+            print(f"  → CSV backup saved: {csv_name}")
+
         else:
             print(f"  → no data found for '{query}', skipping sheet")
