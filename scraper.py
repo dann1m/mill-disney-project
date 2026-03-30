@@ -13,8 +13,8 @@ END_DATE   = "2020-12-31"
 QUERIES = [
     # Animated / Pixar
     # "Inside Out",
-    "Zootopia",
-    "Moana",
+    # "Zootopia",
+    # "Moana",
     "Coco",
     "Incredibles 2",
     "Ralph Breaks the Internet",
@@ -205,8 +205,8 @@ with pd.ExcelWriter("disney_reddit_2015_2020.xlsx", engine="openpyxl") as writer
 
                 if post_id not in seen_post_ids:
                     seen_post_ids.add(post_id)
-                    comments = fetch_comments(post_id, subreddit, query)
-                    query_data.extend(comments)
+                    # comments = fetch_comments(post_id, subreddit, query)
+                    # query_data.extend(comments)
                     time.sleep(0.3)
 
         # save everything for this query to one sheet
