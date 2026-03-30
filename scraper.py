@@ -8,16 +8,90 @@ BASE_URL = "https://arctic-shift.photon-reddit.com"
 
 # testing 48 hrs
 START_DATE = "2015-01-01"
-END_DATE   = "2015-01-02"
+END_DATE   = "2020-12-31"
 
 QUERIES = [
-    "cinderella",
-    "stock",
+    # Animated / Pixar
+    "Inside Out",
+    "Zootopia",
+    "Moana",
+    "Coco",
+    "Incredibles 2",
+    "Ralph Breaks the Internet",
+    "Toy Story 4",
+    "Frozen 2",
+    "Onward",
+    
+    # Live action / Marvel
+    "Avengers Age of Ultron",
+    "Captain America Civil War",
+    "Doctor Strange",
+    "Black Panther",
+    "Avengers Infinity War",
+    "Avengers Endgame",
+    "Spider-Man Homecoming",
+    "Captain Marvel",
+    
+    # Star Wars
+    "Force Awakens",
+    "Rogue One",
+    "Last Jedi",
+    "Solo Star Wars",
+    "Rise of Skywalker",
+    
+    # Live action remakes
+    "Cinderella 2015",
+    "Jungle Book 2016",
+    "Beauty and the Beast 2017",
+    "Aladdin 2019",
+    "Lion King 2019",
+    "Dumbo 2019",
+    "Maleficent Mistress",
+    
+    # Streaming
+    "Disney Plus launch",
+    "Disney Plus subscription",
+    "Disney streaming",
+    "Disney Plus vs Netflix",
+    
+    # Parks
+    "Disney World",
     "Disneyland",
+    "Star Wars Galaxy Edge",
+    "Disney park crowds",
+    "Disney park prices",
+    
+    # CEO
+    "Bob Iger",
+    "Bob Chapek",
+    "Disney CEO",
+    "Iger resignation",
+    "Iger successor",
+    
+    # Stock / Business
+    "Disney stock",
+    "DIS stock",
+    "Disney earnings",
+    "Disney acquisition",
+    "Disney Fox acquisition",
+    "21st Century Fox Disney",
+    "Disney revenue",
+    "Disney subscriber",
 ]
 
 SUBREDDITS = [
-    "disney",
+    "movies",
+    "television",
+    "disney",        
+    "WaltDisneyWorld",
+    "DisneyPlus",
+    "entertainment",
+    "MarvelStudios",
+    "StarWars",
+    "wallstreetbets",
+    "investing",
+    "stocks",
+    "StockMarket",
 ]
 
 HEADERS = {"User-Agent": "disney-sentiment-research/1.0"}
@@ -100,38 +174,45 @@ def fetch_comments(post_id, subreddit, query):
     return comments
 
 
-# main function: get posts and comments
-data = []
+# --- MAIN PIPELINE ---
 seen_post_ids = set()
 
-for query in QUERIES:
-    for subreddit in SUBREDDITS:
-        print(f"\nFetching: '{query}' in r/{subreddit}")
+with pd.ExcelWriter("disney_reddit_2015_2020.xlsx", engine="openpyxl") as writer:
+    for query in QUERIES:
+        query_data = []
 
-        posts = fetch_posts(query, subreddit)
-        print(f"  → {len(posts)} posts found")
+        for subreddit in SUBREDDITS:
+            print(f"\nFetching: '{query}' in r/{subreddit}")
 
-        for post in tqdm(posts):
-            post_id = post["id"]
+            posts = fetch_posts(query, subreddit)
+            print(f"  → {len(posts)} posts found")
 
-            data.append({
-                "type": "post",
-                "id": post_id,
-                "text": post.get("title", "") + " " + (post.get("selftext") or ""),
-                "score": post.get("score"),
-                "created_utc": post.get("created_utc"),
-                "subreddit": post.get("subreddit"),
-                "query": query
-            })
+            if not posts:
+                continue
 
-            if post_id not in seen_post_ids:
-                seen_post_ids.add(post_id)
-                comments = fetch_comments(post_id, subreddit, query)
-                data.extend(comments)
-                time.sleep(0.3)
+            for post in tqdm(posts, desc=f"r/{subreddit}"):
+                post_id = post["id"]
 
+                query_data.append({
+                    "type": "post",
+                    "id": post_id,
+                    "text": post.get("title", "") + " " + (post.get("selftext") or ""),
+                    "score": post.get("score"),
+                    "created_utc": post.get("created_utc"),
+                    "subreddit": post.get("subreddit"),
+                    "query": query
+                })
 
-df = pd.DataFrame(data)
-df.drop_duplicates(subset=["type", "id"], inplace=True)
-df.to_csv("disney_reddit_2015_2020.csv", index=False)
-print(f"\nDone. {len(df)} total records saved.")
+                if post_id not in seen_post_ids:
+                    seen_post_ids.add(post_id)
+                    comments = fetch_comments(post_id, subreddit, query)
+                    query_data.extend(comments)
+                    time.sleep(0.3)
+
+        # save everything for this query to one sheet
+        if query_data:
+            sheet_name = query[:31].replace("/", "").replace("*", "").replace("?", "").replace(":", "").replace("[", "").replace("]", "")
+            pd.DataFrame(query_data).to_excel(writer, sheet_name=sheet_name, index=False)
+            print(f"  → '{sheet_name}' saved ({len(query_data)} records)")
+        else:
+            print(f"  → no data found for '{query}', skipping sheet")
