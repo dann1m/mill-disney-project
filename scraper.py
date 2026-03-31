@@ -103,7 +103,7 @@ def fetch_posts(query, subreddit):
 
     while True:
         params = {
-            "query": query,          # fixed: was "q", correct param is "query"
+            "query": query,        
             "subreddit": subreddit,
             "after": after,
             "before": END_DATE,
@@ -140,41 +140,6 @@ def fetch_posts(query, subreddit):
     return posts
 
 
-def fetch_comments(post_id, subreddit, query):
-    try:
-        r = requests.get(
-            f"{BASE_URL}/api/comments/tree",
-            params={
-                "link_id": f"t3_{post_id}",
-                "limit": 9999,       # get all comments in one call
-            },
-            headers=HEADERS,
-            timeout=30
-        )
-        r.raise_for_status()
-        comments_raw = r.json().get("data", [])
-    except Exception as e:
-        print(f"  Error fetching comments for {post_id}: {e}")
-        return []
-
-    # flatten the tree (filter out "more" collapsed nodes)
-    comments = []
-    for c in comments_raw:
-        if c.get("kind") == "more":
-            continue
-        comments.append({
-            "type": "comment",
-            "id": c.get("id"),
-            "text": c.get("body", ""),
-            "score": c.get("score"),
-            "created_utc": c.get("created_utc"),
-            "subreddit": subreddit,
-            "query": query
-        })
-    return comments
-
-
-# --- MAIN PIPELINE ---
 seen_post_ids = set()
 
 with pd.ExcelWriter("disney_reddit_2015_2020.xlsx", engine="openpyxl") as writer:
@@ -213,8 +178,6 @@ with pd.ExcelWriter("disney_reddit_2015_2020.xlsx", engine="openpyxl") as writer
         if query_data:
             sheet_name = query[:31].replace("/", "").replace("*", "").replace("?", "").replace(":", "").replace("[", "").replace("]", "")
             df_query = pd.DataFrame(query_data)
-            
-            # save CSV backup immediately (won't corrupt)
             csv_name = f"backup_{sheet_name}.csv"
             df_query.to_csv(csv_name, index=False)
             print(f"  → CSV backup saved: {csv_name}")
