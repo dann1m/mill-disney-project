@@ -12,40 +12,39 @@ END_DATE   = "2020-12-31"
 
 QUERIES = [
     # Animated / Pixar
-    # "Inside Out",
-    # "Zootopia",
-    # "Moana",
-    # "Coco",
-    # "Incredibles 2",
-    # "Ralph Breaks the Internet",
-    # "Toy Story 4",
-    # "Frozen 2",
-    # "Onward",
+    "Inside Out",
+    "Zootopia",
+    "Moana",
+    "Coco",
+    "Incredibles 2",
+    "Ralph Breaks the Internet",
+    "Toy Story 4",
+    "Frozen 2",
     
-    # # Live action / Marvel
-    # "Avengers Age of Ultron",
-    # "Captain America Civil War",
-    # "Doctor Strange",
-    # "Black Panther",
-    # "Avengers Infinity War",
-    # "Avengers Endgame",
-    # "Spider-Man Homecoming",
-    # "Captain Marvel",
+    # Live action / Marvel
+    "Avengers Age of Ultron",
+    "Captain America Civil War",
+    "Doctor Strange",
+    "Black Panther",
+    "Avengers Infinity War",
+    "Avengers Endgame",
+    "Spider-Man Homecoming",
+    "Captain Marvel",
     
-    # # Star Wars
-    # "Force Awakens",
-    # "Rogue One",
-    # "Last Jedi",
-    # "Solo Star Wars",
-    # "Rise of Skywalker",
+    # Star Wars
+    "Force Awakens",
+    "Rogue One",
+    "Last Jedi",
+    "Solo Star Wars",
+    "Rise of Skywalker",
     
-    # # Live action remakes
-    # "Cinderella 2015",
-    # "Jungle Book 2016",
-    # "Beauty and the Beast 2017",
-    # "Aladdin 2019",
-    # "Lion King 2019",
-    # "Dumbo 2019",
+    # Live action remakes
+    "Cinderella 2015",
+    "Jungle Book 2016",
+    "Beauty and the Beast 2017",
+    "Aladdin 2019",
+    "Lion King 2019",
+    "Dumbo 2019",
     "Maleficent Mistress",
     
     # Streaming
@@ -142,8 +141,8 @@ def fetch_posts(query, subreddit):
 
 seen_post_ids = set()
 
-with pd.ExcelWriter("disney_reddit_2015_2020.xlsx", engine="openpyxl") as writer:
-    for query in QUERIES:
+# with pd.ExcelWriter("disney_reddit_2015_2020.xlsx", engine="openpyxl") as writer:
+for query in QUERIES:
         query_data = []
 
         for subreddit in SUBREDDITS:
