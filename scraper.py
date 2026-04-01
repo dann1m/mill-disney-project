@@ -20,6 +20,10 @@ QUERIES = [
     "Ralph Breaks the Internet",
     "Toy Story 4",
     "Frozen 2",
+    "Good Dinosaur",
+    "Finding Dory",
+    "Cars 3",
+    "Soul Pixar", 
     
     # Live action / Marvel
     "Avengers Age of Ultron",
@@ -30,6 +34,11 @@ QUERIES = [
     "Avengers Endgame",
     "Spider-Man Homecoming",
     "Captain Marvel",
+    "Ant-Man",
+    "Guardians Galaxy 2",
+    "Thor Ragnarok",
+    "Ant-Man Wasp",
+    "Spider-Man Far From Home",
     
     # Star Wars
     "Force Awakens",
@@ -37,6 +46,7 @@ QUERIES = [
     "Last Jedi",
     "Solo Star Wars",
     "Rise of Skywalker",
+    "Mandalorian",    
     
     # Live action remakes
     "Cinderella 2015",
@@ -46,7 +56,18 @@ QUERIES = [
     "Lion King 2019",
     "Dumbo 2019",
     "Maleficent Mistress",
+    "Mulan 2020",
+    "Lady Tramp 2019",
     
+    # Other notable films
+    "A Wrinkle in Time",
+    "Mary Poppins Returns",
+    "Christopher Robin",
+    "Alice Through Looking Glass",
+    "Pete Dragon 2016",
+    "Artemis Fowl",
+    "Hamilton Disney"
+
     # Streaming
     "Disney Plus launch",
     "Disney Plus subscription",
@@ -75,11 +96,12 @@ QUERIES = [
     "Disney Fox acquisition",
     "21st Century Fox Disney",
     "Disney revenue",
-    "Disney subscriber",
+    "Disney subscriber"
 ]
 
 SUBREDDITS = [
-    "movies",
+    "pixar"
+    # "movies",
     "television",
     "disney",        
     "WaltDisneyWorld",
@@ -90,7 +112,7 @@ SUBREDDITS = [
     "wallstreetbets",
     "investing",
     "stocks",
-    "StockMarket",
+    "StockMarket"
 ]
 
 HEADERS = {"User-Agent": "disney-sentiment-research/1.0"}
