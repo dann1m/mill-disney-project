@@ -12,7 +12,7 @@ nltk.download('punkt_tab')
 nltk.download('stopwords')
 
 # --- LOAD ALL CSVs ---
-csv_files = glob.glob("backup_*.csv")  # picks up all your backup CSVs
+csv_files = glob.glob("reddit_data/backup_*.csv")  # picks up all your backup CSVs
 print(f"Found {len(csv_files)} CSV files: {csv_files}")
 
 df = pd.concat(
