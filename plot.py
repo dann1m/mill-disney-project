@@ -1,4 +1,5 @@
 import pandas as pd
+import yfinance as yf
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import seaborn as sns
@@ -101,6 +102,49 @@ for event, date in events.items():
 plt.tight_layout()
 plt.savefig("plots/4_event_study.png")
 plt.close()
-print("✓ Plot 4 saved")
+
+# extra plot for comparison to recent times
+
+# pull recent data
+recent = yf.download("DIS", start="2021-01-01", end="2025-04-25")
+recent = recent.reset_index()
+recent.columns = [col[0].lower() if isinstance(col, tuple) else col.lower() for col in recent.columns]
+recent["date"] = pd.to_datetime(recent["date"])
+recent["daily_return"] = recent["close"].pct_change()
+
+# plot both periods side by side
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 5))
+
+# 2015-2020
+ax1.plot(df["date"], df["close"], color="steelblue", linewidth=0.8)
+ax1.set_title("DIS Stock Price 2015–2020")
+ax1.set_ylabel("Price (USD)")
+ax1.set_xlabel("Date")
+ax1.xaxis.set_major_formatter(mdates.DateFormatter("%Y"))
+
+# 2021-2025
+ax2.plot(recent["date"], recent["close"], color="orange", linewidth=0.8)
+ax2.set_title("DIS Stock Price 2021–2025")
+ax2.set_ylabel("Price (USD)")
+ax2.set_xlabel("Date")
+ax2.xaxis.set_major_formatter(mdates.DateFormatter("%Y"))
+
+# add key recent events
+recent_events = {
+    "Chapek fired/Iger returns":     "2022-11-20",
+    "Strikes (WGA)":    "2023-05-02",
+    "Kimmel controversy":  "2025-09-17",
+    "Disney+ profitable":    "2024-02-07",
+}
+
+for event, date in recent_events.items():
+    event_date = pd.Timestamp(date)
+    ax2.axvline(event_date, color="red", linewidth=0.7, linestyle="--", alpha=0.6)
+    ax2.text(event_date, ax2.get_ylim()[1] * 0.95, event,
+             rotation=90, fontsize=6, color="red", va="top")
+
+plt.tight_layout()
+plt.savefig("plots/2_current_stock_comparison.png")
+plt.close()
 
 print("\nAll plots saved to /plots folder")
